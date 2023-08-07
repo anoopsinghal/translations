@@ -4,8 +4,7 @@ import os
 
 from flask import Flask, request, jsonify
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-import torch
-import tensorflow
+from flask_cors import CORS
 
 logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
 logger = logging.getLogger()
@@ -16,6 +15,7 @@ logger.addHandler(consoleHandler)
 
 # instance of flask application
 app = Flask(__name__)
+CORS(app) # This will enable CORS for all routes
 
 model_id="google/flan-t5-large"
 
@@ -62,7 +62,6 @@ def translateString():
 
   jsonPost = getJSONFromRequest(request)
   logger.info(jsonPost)
-  print(jsonPost)
 
   fromLang = jsonPost[RK_FROM_LANG]
   fromStr = jsonPost[RK_FROM_STR]
@@ -73,6 +72,7 @@ def translateString():
   outputs = model.generate(inputs.input_ids, max_new_tokens=10000)
   jsonPost[RK_TO_STR] = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
+  logger.info(f"returning json {jsonPost}")
   return jsonPost
 # end translate
 
