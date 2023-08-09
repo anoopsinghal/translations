@@ -2,7 +2,7 @@
 import logging
 import os
 
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
@@ -52,6 +52,8 @@ def saveTranslation():
 
   Article.saveTranslation(db_session, jsonPost)
 
+  db_session.commit()
+  db_session.close()
   return jsonPost
 # end translate
 
