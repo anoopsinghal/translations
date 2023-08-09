@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
+import utils.utils
 from orm.article import Article
 
 logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
@@ -19,7 +20,7 @@ logger.addHandler(consoleHandler)
 app = Flask(__name__)
 CORS(app) # This will enable CORS for all routes
 
-app.config ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///translations.sqlite3'
+db_conn_str = 'sqlite:///translations.db'
 
 @app.route("/", methods = ['GET'])
 def ping():
@@ -46,6 +47,10 @@ def saveTranslation():
   jsonPost = getJSONFromRequest(request)
   logger.info(jsonPost)
 
+  engine = utils.utils.create_db_engine(db_conn_str)
+  db_session = utils.utils.create_db_session(engine)
+
+  Article.saveTranslation(db_session, jsonPost)
 
   return jsonPost
 # end translate
