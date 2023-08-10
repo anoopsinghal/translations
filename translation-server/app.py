@@ -51,7 +51,12 @@ def translateString():
 
   response = requests.post(url, json=jsonPost, headers=headers)
 
-  return response.json()
+  jsonPost = response.json()
+  url = os.environ["DB_SERVER_API_URL"]
+  headers = {'Content-type': 'application/json; charset=UTF-8', 'Accept':'application/json', "Access-Control-Allow-Origin": "*"}
+  response = requests.post(url, json=jsonPost, headers=headers)
+
+  return jsonPost
 # end translate
 
 def getJSONFromRequest(request):
