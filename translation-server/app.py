@@ -1,9 +1,9 @@
 # import flast module
 import logging
 import os
+import requests
 
 from flask import Flask, request, jsonify
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from flask_cors import CORS
 
 logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
@@ -17,25 +17,17 @@ logger.addHandler(consoleHandler)
 app = Flask(__name__)
 CORS(app) # This will enable CORS for all routes
 
-model_id="google/flan-t5-large"
-
-model = AutoModelForSeq2SeqLM.from_pretrained(model_id)
-tokenizer = AutoTokenizer.from_pretrained(model_id)
-
 @app.route("/", methods = ['GET'])
 def ping():
   return "I am alive"
 # end ping
 
-@app.route("/test", methods = ['POST'])
-def test():
-  return "i got post"
-
 # translate according to params in post. Returns a json
 @app.route("/translate", methods = ['POST'])
 def translateString():
   """
-  We post a json to this function and it returns a json with translated text
+  We post a json to this function and it returns a json with translated text.
+  It also saves the generated translation into a db as configured through an env var
   Supported languages are:
     en - English
     de - German
@@ -53,37 +45,13 @@ def translateString():
     toStr : translated string
   """
 
-  jsonPost = {"error":"init to error"}
-  try :
-    RK_FROM_LANG = 'fromLang'
-    RK_TO_LANG = 'toLang'
-    RK_FROM_STR = 'fromStr'
-    RK_TO_STR = 'toStr'
+  url = os.environ["MODEL_SERVER_API_URL"]
+  headers = {'Content-type': 'application/json; charset=UTF-8', 'Accept':'application/json', "Access-Control-Allow-Origin": "*"}
+  jsonPost = getJSONFromRequest(request)
 
-    langMap = {"en" : "English", "de" : "German", "fr" : "French", "es" : "Spanish"}
+  response = requests.post(url, json=jsonPost, headers=headers)
 
-    print(request)
-
-    jsonPost = getJSONFromRequest(request)
-    logger.info(jsonPost)
-
-    fromLang = jsonPost[RK_FROM_LANG]
-    fromStr = jsonPost[RK_FROM_STR]
-    toLang = jsonPost[RK_TO_LANG]
-
-    str = f"translate {langMap[fromLang]} to {langMap[toLang]}: {fromStr}"
-    inputs = tokenizer(str, return_tensors="pt")
-    outputs = model.generate(inputs.input_ids, max_new_tokens=10000)
-    jsonPost[RK_TO_STR] = tokenizer.decode(outputs[0], skip_special_tokens=True)
-
-    logger.info(f"returning json {jsonPost}")
-  except Exception as inst:
-    logger.error(type(inst))  # the exception instance
-    logger.error(inst.args)  # arguments stored in .args
-    logger.error(inst)  # __str__ allows args to be logger.debuged
-  # end except
-
-  return jsonPost
+  return response.json()
 # end translate
 
 def getJSONFromRequest(request):
@@ -104,4 +72,4 @@ def setLogLevel():
 #end setLogLevel
 
 if __name__ == '__main__':
-  app.run(debug=True, port=5001)
+  app.run()

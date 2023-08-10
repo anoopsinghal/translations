@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View, TextInput, Button, Alert } from "react-native";
+import { TRANSLATION_SERVER_API_URL } from "@env"
 
 function LanguageTranslation({ label, prompt, onChangeTextFn }) {
   return (
@@ -25,7 +26,7 @@ function LanguageTranslation({ label, prompt, onChangeTextFn }) {
 
 Translate = async (fromLang, fromStr, toLang, toStrFn) => {
   try {
-    let response = await fetch("http://127.0.0.1:5000/translate", {
+    let response = await fetch(TRANSLATION_SERVER_API_URL, {
       method: "POST",
       headers: {
         Accept: "application/json",
