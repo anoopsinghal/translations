@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
+import { environment } from 'src/environment/environment';
 
 @Injectable()
 export class TranslateService {
-  private translateUrl = 'http://127.0.0.1:5000/translate'; // URL to web api
+  translateUrl!: string;
+
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -13,7 +15,9 @@ export class TranslateService {
     }),
   };
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.translateUrl = environment.translationServerAPIURL;
+  }
 
   getTranslations(
     fromLang: string,
