@@ -28,7 +28,7 @@ public class ArticleController {
 		return "Greetings from Spring Boot!";
 	}
 
-	@PostMapping("/saveTranslation")
+	@PostMapping("/save-translation")
 	public ResponseEntity<TranslationPojo> saveTranslation(@RequestBody TranslationPojo translation) {
     String md5Hash = DigestUtils.md5DigestAsHex(translation.fromStr.getBytes()).toUpperCase();
     

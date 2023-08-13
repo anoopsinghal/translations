@@ -8,6 +8,9 @@
     },
     {
       "path": "jpa-db-server"
+    },
+    {
+      "path": "nodejs-db-server"
     }
   ],
   "settings": {

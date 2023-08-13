@@ -28,7 +28,7 @@ def ping():
 # end ping
 
 # translate according to params in post. Returns a json
-@app.route("/saveTranslation", methods = ['POST'])
+@app.route("/save-translation", methods = ['POST'])
 def saveTranslation():
   """
   We post a json to this function and it returns a json with translated text
