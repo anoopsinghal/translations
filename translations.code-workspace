@@ -5,6 +5,12 @@
     },
     {
       "path": "react-native-ui"
+    },
+    {
+      "path": "jpa-db-server"
     }
-  ]
+  ],
+  "settings": {
+    "java.configuration.updateBuildConfiguration": "interactive"
+  }
 }
