@@ -32,7 +32,7 @@ JSON Returned:
     `toLang`   : language code for the translation
     `toStr`    : Translated String in specified language
         
-###Model Server      
+### Model Server      
 This server is called from the translation server to translate an input string in a language to another language.  
 
 This server uses flan_t5_large server for translation.
@@ -54,7 +54,7 @@ JSON Returned:
     `toStr`    : Translated String in specified language
         
 
-###DB Server      
+### DB Server      
 This server is called from the translation server to store translations between languages. It will be passed both the original and translated strings. It will store both the strings separately, linking them both through md5 of original string
 
 ##### Environment Variable Identifier
